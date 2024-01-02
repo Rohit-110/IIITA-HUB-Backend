@@ -13,8 +13,7 @@ export const register = async(req,res)=>{
         success: false,
         message: "User already Exist",
     })
-    const hashedPassword = await bcrypt.hash(password,10)
-    user= await User.create({name,email, password: hashedPassword,mobile});
+    user= await User.create({name,email, password,mobile});
     sendCookie(user,res,"Registered Successfully", 201);
    
 };
@@ -30,7 +29,7 @@ export const login =async(req,res,next)=>{
         message: "Invalid Email id or Password",
     })
     const username= user.name;
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await compare(password, user.password);
     if(!isMatch)
     return res.status(404).json({
         success: false,
