@@ -7,11 +7,10 @@ const router= express.Router();
 router.post('/new',register);
 router.post('/login',login);
 router.get('/logout',logout);
-router.post('/me',getmyprofile);
+router.get('/me',getmyprofile);
 router.get('/hello',(req,res)=>{
     res.send("Hello World");
 })
-router.get('/me',getmyprofile);
 export default router;
 
 
