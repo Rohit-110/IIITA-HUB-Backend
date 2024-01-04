@@ -69,7 +69,7 @@ export const getmyform = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Assuming Entrepreneur is directly associated with the User model
-        const entrepreneur = await Entrepreneur.findOne({ user: decoded._id });
+        const entrepreneur = await Entrepreneur.find({ user: decoded._id });
 
         res.status(200).json({
             success: true,
