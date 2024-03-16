@@ -4,41 +4,58 @@ import { sendCookie } from "../utils/feature.js";
 import jwt from "jsonwebtoken";
 
 
-export const register = async(req,res)=>{
-    const {name, email, password, mobile}=req.body;
-    
-    let user= await User.findOne({email});
-    
-    if(user)return res.status(404).json({
-        success: false,
-        message: "User already Exist",
-    })
-    user= await User.create({name,email,password,mobile});
-    sendCookie(user,res,"Registered Successfully", 201);
-   
+export const register = async (req, res) => {
+    const { name, email, password, mobile } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (user) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user = await User.create({ name, email, password: hashedPassword, mobile });
+
+        sendCookie(user, res, "Registered Successfully", 201);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
+    }
 };
 
-export const login =async(req,res,next)=>{
+export const login = async (req, res, next) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "Invalid Email id or Password",
+        });
+    }
+    const username = user.name;
 
-    const {email,password} = req.body;
-    const user = await User.findOne({email}).select("+password");
-    
-    if(!user)
-    return res.status(404).json({
-        success: false,
-        message: "Invalid Email id or Password",
-    })
-    const username= user.name;
-    console.log(user.password+" "+password);
-    const isMatch = (user.password === password);
-    console.log(isMatch);
-    if(!isMatch)
-    return res.status(404).json({
-        success: false,
-        message: "Invalid Email or Password",
-    })
-    sendCookie(user,res,"Welcome back, "+username,200);
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Server error",
+            });
+        }
 
+        if (!isMatch) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid Email or Password",
+            });
+        }
+        sendCookie(user, res, "Welcome back, " + username, 200);
+    });
 };
 
 export const getmyprofile = async (req,res)=>{
