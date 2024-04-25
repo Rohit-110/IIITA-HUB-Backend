@@ -4,5 +4,5 @@ export const connectDB = ()=>{
         dbName: "IIITAHub",
     })
     .then((c) => console.log(`Database is Connected with ${c.connection.host}`))
-    .catch((e) => console.log(e));
+    .catch((e) => console.log(e.message));
 };

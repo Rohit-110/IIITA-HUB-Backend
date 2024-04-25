@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const schema1 = new mongoose.Schema({
+const schema2 = new mongoose.Schema({
     name: {
        type: String,
     },
@@ -13,7 +13,7 @@ const schema1 = new mongoose.Schema({
         select: false,
     },
     mobile:{
-        type: String,
+        type: Number,
     },
 });
-export const User = mongoose.model("user",schema1);
+export const Admin = mongoose.model("admin",schema2);

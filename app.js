@@ -1,8 +1,10 @@
 import cookieParser from 'cookie-parser';
 import { config } from "dotenv";
 import express from 'express';
-import userRouter from './routes/user.js';
+import studentRouter from './routes/student.js';
+import adminRouter from './routes/admin.js';
 import cors from "cors";
+import path from 'path';
 export const app = express();
 
 
@@ -19,11 +21,14 @@ app.use(cors({
     credentials: true,
 }))
 
+app.set('view engine', 'ejs');
+app.set('views', path.join('C:','Users','Rohit Pandey','Desktop','IIITA HUB BACKEND', 'views'));
 
-app.use("/api/v1/users",userRouter);
+app.use("/api/v1/student",studentRouter);
+app.use("/api/v1/admin",adminRouter);
 
 app.get("/",(req,res)=>{
-    res.send('Nice Working');
+    res.render('index');
 });
 
 
